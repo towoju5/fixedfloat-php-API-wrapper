@@ -45,7 +45,7 @@ class Fixedfloat
      * @param enum type ['fixed', 'float'] required
      * @response Object
      */
-    public function createOrder()
+    public function createOrder($data)
     {
         $data = $data ?? [];
         $endpoint = 'createOrder';
