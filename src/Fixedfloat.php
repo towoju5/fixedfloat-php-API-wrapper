@@ -45,7 +45,7 @@ class Fixedfloat
      * @param enum type ['fixed', 'float'] required
      * @response Object
      */
-    public function createOrder($data)
+    public function createOrder(array $data)
     {
         $data = $data ?? [];
         $endpoint = 'createOrder';
@@ -62,10 +62,25 @@ class Fixedfloat
      * @param number toQty optional 
      * @param enum type ['fixed', 'float'] required
      */
-    public function getPrice()
+    public function getPrice(array $data)
     {
-        $endpoint = 'getCurrencies';
-        $response = $this->process([], $endpoint, "GET");
+        // return response()->json($data);
+        $endpoint = 'getPrice';
+        $response = $this->process($data, $endpoint, "POST");
+        return $response;
+    }
+
+    /**
+     * @return JSON
+     * @method POST
+     * @param string currency required
+     * @param string address required
+     */
+    public function exchangeAddressInfo(array $data)
+    {
+        // return response()->json($data);
+        $endpoint = file_get_contents("https://fixedfloat.com/ajax/exchangeAddressInfo?".http_build_query($data));
+        $response = result($endpoint);
         return $response;
     }
 
@@ -87,7 +102,7 @@ class Fixedfloat
      * @param string id : orderID required
      * @param string token: Security token of Order required
      */
-    public function getOrder()
+    public function getOrder(array $data)
     {
         $endpoint = 'getOrder';
         $response = $this->process([], $endpoint, "GET");
@@ -131,12 +146,12 @@ class Fixedfloat
         $postdata = $data;
 
         // Set URL & Header
-        curl_setopt($this->curl, CURLOPT_URL, $curl_url . "?{$query}");
+        curl_setopt($this->curl, CURLOPT_URL, $curl_url);
 
         //Add post vars
         if ($method == "POST") {
             curl_setopt($this->curl, CURLOPT_POST, 1);
-            curl_setopt($this->curl, CURLOPT_POSTFIELDS, array());
+            curl_setopt($this->curl, CURLOPT_POSTFIELDS, $query);
         }
 
         //Get result
